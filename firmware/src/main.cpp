@@ -34,6 +34,7 @@ DNSServer dns;
 String name;
 
 const char *mqtt_server = "revspace.nl";
+const char *ntp_server = "nl.pool.ntp.org";
 AsyncMqttClient mqttClient;
 Ticker mqttReconnectTimer;
 
@@ -47,7 +48,9 @@ WiFiUDP ntpUDP;
 // Here we specify to use pool.ntp.org, but also set the time offset
 // as one hour ahead and set to check and update each hour
 //NTPClient timeClient(ntpUDP, "pool.ntp.org", 3600, 3600);
-NTPClient timeClient(ntpUDP);
+
+
+NTPClient timeClient(ntpUDP, ntp_server, 7200, 600000);
 
 
 void connectToMqtt() {
@@ -185,14 +188,12 @@ void setup() {
 
     timeClient.begin();
 
-    timeClient.update();
-
     timeClient.setUpdateInterval(7200);
 
-    unsigned long epochTime;
-    epochTime = timeClient.getEpochTime();
-    Serial.println(timeClient.getFormattedTime());
-    Serial.printf("epochTime = %lu\n", epochTime);
+    // unsigned long epochTime;
+    // epochTime = timeClient.getEpochTime();
+    // Serial.println(timeClient.getFormattedTime());
+    // Serial.printf("epochTime = %lu\n", epochTime);
     
     Serial.println("setup() done.");
 
@@ -201,9 +202,18 @@ void setup() {
 void loop() {
     MDNS.update();
     // Get time from NTPclient
-    timeClient.update();
-
-    Serial.println(timeClient.getFormattedTime());
-    //Serial.println(rtc.getDateTime());
     drd->loop();
+    
+    //timeClient.update();
+
+    //Serial.println(timeClient.getFormattedTime());
+
+    if ( timeClient.getSeconds() % 30 > 15 ) {
+        display.displayTime(timeClient.getHours(), timeClient.getMinutes());
+    } else {
+        display.toggleDisplay(DisplayManager::nteller);
+    }
+    //}
+    //Serial.println(rtc.getDateTime());
+ 
 }
