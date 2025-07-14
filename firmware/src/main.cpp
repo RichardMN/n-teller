@@ -188,32 +188,23 @@ void setup() {
 
     timeClient.begin();
 
-    timeClient.setUpdateInterval(7200);
-
-    // unsigned long epochTime;
-    // epochTime = timeClient.getEpochTime();
-    // Serial.println(timeClient.getFormattedTime());
-    // Serial.printf("epochTime = %lu\n", epochTime);
-    
+    timeClient.setUpdateInterval(720000);
+ 
     Serial.println("setup() done.");
 
 }
 
 void loop() {
     MDNS.update();
-    // Get time from NTPclient
     drd->loop();
     
-    //timeClient.update();
-
-    //Serial.println(timeClient.getFormattedTime());
+    // Get time from NTPclient
+    timeClient.update();
 
     if ( timeClient.getSeconds() % 30 > 15 ) {
         display.displayTime(timeClient.getHours(), timeClient.getMinutes());
     } else {
         display.toggleDisplay(DisplayManager::nteller);
     }
-    //}
-    //Serial.println(rtc.getDateTime());
  
 }
