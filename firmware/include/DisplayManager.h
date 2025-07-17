@@ -31,6 +31,9 @@ private:
     int16_t hours;
     int16_t minutes;
     int16_t milligradeT;
+    void showTemperature(void);
+    void showTime(void);
+    void showNumber(void);
     static const uint8_t PATTERN_UNDEFINED = 0b11001001;
     static const uint8_t patterns[96];
 };

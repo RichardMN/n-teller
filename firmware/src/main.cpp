@@ -126,6 +126,9 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
     }
 
     if (topicString == "revspace/sensors/knmi/6215/temperature-10cm") {
+        uint16_t milligradeT;
+        milligradeT = round(payloadString.toFloat()*10.0);
+        Serial.printf("milligradeT = %d\n", milligradeT);
         display.displayTemp(payloadString.toFloat()*10.0);
     }
 
@@ -206,10 +209,13 @@ void loop() {
     // Get time from NTPclient
     timeClient.update();
 
-    if ( timeClient.getSeconds() % 30 > 15 ) {
+    //display.displayTemp( (timeClient.getSeconds() -30 ) * 5 );
+    if ( timeClient.getSeconds() % 30 > 10 ) {
         display.displayTime(timeClient.getHours(), timeClient.getMinutes());
-    } else {
+    } else if ( timeClient.getSeconds() % 30 > 20 ) {
         display.toggleDisplay(DisplayManager::nteller);
+    } else {
+        display.toggleDisplay(DisplayManager::thermometer);
     }
  
 }
