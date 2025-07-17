@@ -19,6 +19,7 @@ public:
     void initialize();
     void displayNumber(int16_t n, bool open = true);
     void displayTime(int16_t hours, int16_t minutes);
+    void displayTemp(int16_t milligrade);
     void toggleDisplay(displayMode mode);
     void showPattern(uint8_t digit, uint8_t pattern);
     uint8_t getPattern(char character);
@@ -29,6 +30,7 @@ private:
     int16_t n;
     int16_t hours;
     int16_t minutes;
+    int16_t milligradeT;
     static const uint8_t PATTERN_UNDEFINED = 0b11001001;
     static const uint8_t patterns[96];
 };

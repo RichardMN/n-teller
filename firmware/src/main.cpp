@@ -79,6 +79,7 @@ void onMqttConnect(bool sessionPresent) {
     Serial.println("Subscribing topics.");
     mqttClient.subscribe("revspace/doorduino/checked-in", 0);
     mqttClient.subscribe("revspace/state", 0);
+    mqttClient.subscribe("revspace/sensors/knmi/6215/temperature-10cm", 0);
 }
 
 void onMqttDisconnect(AsyncMqttClientDisconnectReason reason) {
@@ -122,6 +123,10 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
 
     if (topicString == "revspace/state") {
         state = (payloadString == "open");
+    }
+
+    if (topicString == "revspace/sensors/knmi/6215/temperature-10cm") {
+        display.displayTemp(payloadString.toFloat()*10.0);
     }
 
     display.displayNumber(checkedin, state);

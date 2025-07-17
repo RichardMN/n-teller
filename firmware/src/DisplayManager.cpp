@@ -62,6 +62,32 @@ void DisplayManager::displayTime(int16_t hours, int16_t minutes) {
     lc.setChar(0, 3, minutes % 10, false);
 }
 
+void DisplayManager::displayTemp(int16_t milligrade) {
+    this->milligradeT = milligrade;
+    showPattern(3, DisplayManager::getPattern('C'));
+    if ( this->milligradeT < 0 ) {
+        showPattern(0, DisplayManager::getPattern('-'));
+        if ( this->milligradeT < -99 )  {
+            // that is, temperature <= -10C; we drop the C
+            // so we can show -dd.d where d are digits
+            lc.setChar(0, 1, -this->milligradeT/100, false);
+            lc.setChar(0, 2, (-this->milligradeT % 100 )/10, true);
+            lc.setChar(0, 3, -this->milligradeT % 10, false);
+        } else {
+            lc.setChar(0, 1, -this->milligradeT % 100/10, true);
+            lc.setChar(0, 2, -this->milligradeT % 10, false);
+        }
+    } else {
+        // positive temperatures, no need to shift
+        if ( this->milligradeT > 99 ) {
+            lc.setChar(0, 0, this->milligradeT/100, false);
+        } else {
+            showPattern(0, DisplayManager::getPattern(' '));
+        }
+        lc.setChar(0, 1, this->milligradeT / 10, true);
+        lc.setChar(0, 2, this->milligradeT % 10, false);   
+    }
+}
 void DisplayManager::toggleDisplay(DisplayManager::displayMode mode) {
     switch (mode) {
         case nteller:
