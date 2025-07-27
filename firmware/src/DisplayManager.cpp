@@ -72,6 +72,7 @@ void DisplayManager::showTemperature(void) {
         lc.setChar(0, 2, this->milligradeT % 10, false);   
         showPattern(3, DisplayManager::getPattern('C'));
     } else {
+        // negative temperatures
         showPattern(0, DisplayManager::getPattern('-'));
         if ( this->milligradeT < -99 )  {
             // that is, temperature <= -10C; we drop the C
@@ -80,6 +81,8 @@ void DisplayManager::showTemperature(void) {
             lc.setChar(0, 2, (-this->milligradeT % 100 )/10, true);
             lc.setChar(0, 3, -this->milligradeT % 10, false);
         } else {
+            // temperature is between 0 and -10C, we can show
+            // the minus sign, both digits and a C
             lc.setChar(0, 1, -this->milligradeT % 100/10, true);
             lc.setChar(0, 2, -this->milligradeT % 10, false);
             showPattern(3, DisplayManager::getPattern('C'));
@@ -100,8 +103,6 @@ void DisplayManager::showText(const char *text) {
 
 void DisplayManager::showNumber() {
     int n;
-    bool open;
-    open = this->open;
     n = this->n;
     if (n < 0) {
         DisplayManager::showText(" -- ");
@@ -131,7 +132,7 @@ void DisplayManager::showNumber() {
         showPattern(2, 0);
     }
 
-    lc.setChar(0, 3, n % 10, (open == false));
+    lc.setChar(0, 3, n % 10, (this->open == false));
 }
 
 uint8_t DisplayManager::getPattern(char character) {
