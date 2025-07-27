@@ -28,6 +28,7 @@ public:
 private:
     LedControl lc;
     int16_t n;
+    bool open;
     int16_t hours;
     int16_t minutes;
     int16_t milligradeT;

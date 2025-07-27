@@ -47,8 +47,6 @@ WiFiUDP ntpUDP;
 // no offset
 // Here we specify to use pool.ntp.org, but also set the time offset
 // as one hour ahead and set to check and update each hour
-//NTPClient timeClient(ntpUDP, "pool.ntp.org", 3600, 3600);
-
 
 NTPClient timeClient(ntpUDP, ntp_server, 7200, 600000);
 
@@ -210,12 +208,18 @@ void loop() {
     timeClient.update();
 
     //display.displayTemp( (timeClient.getSeconds() -30 ) * 5 );
-    if ( timeClient.getSeconds() % 30 > 10 ) {
-        display.displayTime(timeClient.getHours(), timeClient.getMinutes());
-    } else if ( timeClient.getSeconds() % 30 > 20 ) {
-        display.toggleDisplay(DisplayManager::nteller);
-    } else {
-        display.toggleDisplay(DisplayManager::thermometer);
+    int seconds = timeClient.getSeconds();
+    switch ( (seconds/10) % 3 ) {
+        case 0:
+            display.displayTime(timeClient.getHours(), timeClient.getMinutes());
+            break;
+        default:
+        case 1:
+            display.toggleDisplay(DisplayManager::nteller);
+            break;
+        case 2:
+            display.toggleDisplay(DisplayManager::thermometer);
+            break;
     }
  
 }
